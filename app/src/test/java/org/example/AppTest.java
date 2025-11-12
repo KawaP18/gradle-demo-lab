@@ -8,4 +8,16 @@ class AppTest {
         App classUnderTest = new App();
         assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
     }
+
+    @Test
+    void greetingContainsHelloWorld() {
+        App classUnderTest = new App();
+        assertTrue(classUnderTest.getGreeting().contains("Hello"), "greeting should contain 'Hello'");
+    }
+
+    @Test
+    void reverseGreetingTest() {
+        App classUnderTest = new App();
+        assertEquals("!spoOveD ,olleH", classUnderTest.getReverseGreeting(), "reverse greeting should be '!spoOveD ,olleH'");
+    }
 }
