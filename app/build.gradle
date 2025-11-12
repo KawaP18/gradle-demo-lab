@@ -1,0 +1,30 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+    implementation 'com.google.guava:guava:31.1-jre'
+}
+
+application {
+    mainClass = 'org.example.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+task showProjectInfo {
+    doLast {
+        println "Project Name: ${project.name}"
+        println "Project Version: ${project.version}"
+        println "Java Version: ${System.getProperty('java.version')}"
+        println "Gradle Version: ${gradle.gradleVersion}"
+        println "Build Time: ${new Date()}"
+    }
+}
