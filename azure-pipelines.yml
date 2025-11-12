@@ -4,38 +4,30 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
-
 steps:
-- task: JavaToolInstaller@0
+- task: Gradle@3
   inputs:
-    versionSpec: '17'
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '17'
     jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'build jacocoTestReport'
 
-- script: |
-    # Compile Java source
-    mkdir -p app/build/classes
-    mkdir -p app/build/test-classes
-    javac -d app/build/classes app/src/main/java/org/example/App.java
-    
-    # Compile and run tests
-    javac -cp app/src/main/java -d app/build/test-classes app/src/test/java/org/example/SimpleTestRunner.java
-    echo "Running Unit Tests:"
-    java -cp "app/build/classes:app/build/test-classes" org.example.SimpleTestRunner
-    
-    # Run the application
-    echo "\nRunning application:"
-    java -cp app/build/classes org.example.App
-    
-    # Test reverse greeting feature
-    echo "\nTesting reverse greeting feature:"
-    java -cp app/build/classes -c "System.out.println(new org.example.App().getReverseGreeting());"
-    
-    # Show project info
-    echo "\nProject Info:"
-    echo "Project Name: gradle-demo"
-    echo "Java Version: $(java -version 2>&1 | head -n 1)"
-    echo "Build Time: $(date)"
-  displayName: 'Build, Test and Run Java Application'
+- task: PublishCodeCoverageResults@2
+  inputs:
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
+
+- task: Gradle@3
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '17'
+    jdkArchitectureOption: 'x64'
+    tasks: 'showProjectInfo'

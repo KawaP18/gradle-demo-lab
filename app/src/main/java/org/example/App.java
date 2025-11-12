@@ -2,7 +2,7 @@ package org.example;
 
 public class App {
     public String getGreeting() {
-        return "Hello, DevOps!";
+        return "Hello World! Welcome to TDD.";
     }
 
     public String getReverseGreeting() {

@@ -12,12 +12,12 @@ class AppTest {
     @Test
     void greetingContainsHelloWorld() {
         App classUnderTest = new App();
-        assertTrue(classUnderTest.getGreeting().contains("Hello"), "greeting should contain 'Hello'");
+        assertTrue(classUnderTest.getGreeting().contains("Hello World!"), "greeting should contain 'Hello World!'");
     }
 
     @Test
     void reverseGreetingTest() {
         App classUnderTest = new App();
-        assertEquals("!spoOveD ,olleH", classUnderTest.getReverseGreeting(), "reverse greeting should be '!spoOveD ,olleH'");
+        assertEquals(".DDT ot emocleW !dlroW olleH", classUnderTest.getReverseGreeting(), "reverse greeting should be '.DDT ot emocleW !dlroW olleH'");
     }
 }
