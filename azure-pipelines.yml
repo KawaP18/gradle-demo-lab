@@ -11,17 +11,17 @@ steps:
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
-- script: |
-    chmod +x gradlew
-    ./gradlew build test jacocoTestReport --no-daemon
-  displayName: 'Build and Test with Gradle'
-
-- task: PublishTestResults@2
+- task: Gradle@2
   inputs:
-    testResultsFormat: 'JUnit'
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '17'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-  condition: always()
+    tasks: 'build test jacocoTestReport'
 
 - task: PublishCodeCoverageResults@2
   inputs:
@@ -29,6 +29,12 @@ steps:
     pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
   condition: succeededOrFailed()
 
-- script: |
-    ./gradlew showProjectInfo --no-daemon
-  displayName: 'Show Project Info'
+- task: Gradle@2
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '17'
+    jdkArchitectureOption: 'x64'
+    tasks: 'showProjectInfo'
