@@ -4,24 +4,27 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: Gradle@3
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '17'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: false
-    tasks: 'build'
+variables:
+  GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
 
-- task: Gradle@3
+steps:
+- task: JavaToolInstaller@0
   inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '17'
+    versionSpec: '17'
     jdkArchitectureOption: 'x64'
-    tasks: 'showProjectInfo'
+    jdkSourceOption: 'PreInstalled'
+
+- script: |
+    # Compile Java source
+    mkdir -p app/build/classes
+    javac -d app/build/classes app/src/main/java/org/example/App.java
+    
+    # Run the application
+    echo "Running application:"
+    java -cp app/build/classes org.example.App
+    
+    # Show project info
+    echo "Project Name: gradle-demo"
+    echo "Java Version: $(java -version 2>&1 | head -n 1)"
+    echo "Build Time: $(date)"
+  displayName: 'Build and Run Java Application'
