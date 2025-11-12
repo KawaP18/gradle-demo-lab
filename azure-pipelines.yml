@@ -5,30 +5,29 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: JavaToolInstaller@0
+- task: Gradle@3
   inputs:
-    versionSpec: '17'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
-
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean compile test'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '17'
-    mavenVersionOption: 'Default'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'build jacocoTestReport'
 
 - task: PublishCodeCoverageResults@2
   inputs:
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
     pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
-  condition: succeededOrFailed()
 
-- script: |
-    echo "Project Name: gradle-demo"
-    echo "Java Version: $(java -version 2>&1 | head -n 1)"
-    echo "Build Time: $(date)"
-  displayName: 'Show Project Info'
+- task: Gradle@3
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '17'
+    jdkArchitectureOption: 'x64'
+    tasks: 'showProjectInfo'
