@@ -11,30 +11,24 @@ steps:
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
-- task: Gradle@2
+- task: Maven@3
   inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
+    mavenPomFile: 'pom.xml'
+    goals: 'clean compile test'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '17'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'build test jacocoTestReport'
+    mavenVersionOption: 'Default'
 
 - task: PublishCodeCoverageResults@2
   inputs:
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml'
     pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
   condition: succeededOrFailed()
 
-- task: Gradle@2
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '17'
-    jdkArchitectureOption: 'x64'
-    tasks: 'showProjectInfo'
+- script: |
+    echo "Project Name: gradle-demo"
+    echo "Java Version: $(java -version 2>&1 | head -n 1)"
+    echo "Build Time: $(date)"
+  displayName: 'Show Project Info'
